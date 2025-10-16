@@ -1,25 +1,72 @@
-<table border="1">
-  <tr>
-    <th>商品</th>
-    <th>回購</th>
-    <th>銷售</th>
-    <th>時間</th>
-  </tr>
-  <tr>
-    <td>黃金</td>
-    <td id="gold-buy">--</td>
-    <td id="gold-sell">--</td>
-    <td id="gold-time">--</td>
-  </tr>
-</table>
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>逸瓏回收黃金業務</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <h1>逸瓏回收黃金業務</h1>
+      <p class="subtitle">誠信報價｜即時更新（目前為靜態示範）</p>
+    </div>
+  </header>
 
-<script>
-  // 假設有行情 API
-  fetch("https://api.example.com/gold")
-    .then(res => res.json())
-    .then(data => {
-      document.getElementById("gold-buy").innerText = data.buy;
-      document.getElementById("gold-sell").innerText = data.sell;
-      document.getElementById("gold-time").innerText = data.time;
-    });
-</script>
+  <main class="container">
+    <section class="notice">
+      <p><strong>免責聲明：</strong>本頁面為靜態示範版，價格僅供參考，實際回收價以當天門市或客服確認為準。</p>
+    </section>
+
+    <section class="cards">
+      <article class="card">
+        <h2>本地黃金報價</h2>
+        <p class="section-note">單位：港元/克（示範數據，可手動更新）</p>
+
+        <table class="price-table" id="table-local-gold"></table>
+
+        <blockquote class="sources">Sources:  [9F742443-6C92-4C44-BF58-8F5A7C53B6F1](https://htjy9999.com/?citationMarker=9F742443-6C92-4C44-BF58-8F5A7C53B6F1&citationId=0D0ABC82-8EB9-4064-900D-EAAFA45C184B&citationTitle=htjy9999.com&citationFullTitle=htjy9999.com&chatItemId=9uxE2JFzXvvzimKjUge4x)</blockquote>
+      </article>
+
+      <article class="card">
+        <h2>上海交易所（黃金）</h2>
+        <p class="section-note">單位：人民幣/克（示範數據）</p>
+
+        <table class="price-table" id="table-shanghai-gold"></table>
+
+        <blockquote class="sources">Sources:  [9F742443-6C92-4C44-BF58-8F5A7C53B6F1](https://htjy9999.com/?citationMarker=9F742443-6C92-4C44-BF58-8F5A7C53B6F1&citationId=0D0ABC82-8EB9-4064-900D-EAAFA45C184B&citationTitle=htjy9999.com&citationFullTitle=htjy9999.com&chatItemId=9uxE2JFzXvvzimKjUge4x)</blockquote>
+      </article>
+
+      <article class="card">
+        <h2>國際行情（黃金）</h2>
+        <p class="section-note">單位：美元/盎司 或 港元/兩（示範數據）</p>
+
+        <table class="price-table" id="table-global-gold"></table>
+
+        <blockquote class="sources">Sources:  [9F742443-6C92-4C44-BF58-8F5A7C53B6F1](https://htjy9999.com/?citationMarker=9F742443-6C92-4C44-BF58-8F5A7C53B6F1&citationId=0D0ABC82-8EB9-4064-900D-EAAFA45C184B&citationTitle=htjy9999.com&citationFullTitle=htjy9999.com&chatItemId=9uxE2JFzXvvzimKjUge4x)</blockquote>
+      </article>
+    </section>
+
+    <section class="cta">
+      <div class="cta-box">
+        <h3>回收流程</h3>
+        <ul class="steps">
+          <li><strong>諮詢：</strong>提供飾品成色與重量，初步估價</li>
+          <li><strong>檢測：</strong>到店或快遞檢測，確認含金量</li>
+          <li><strong>定價：</strong>依當日報價與成色計算，現金或轉帳</li>
+        </ul>
+        <button class="primary">聯絡我們</button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>© 逸瓏回收黃金業務｜價格僅供參考，以當天門市報價為準</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
