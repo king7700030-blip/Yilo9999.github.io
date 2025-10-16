@@ -1,111 +1,25 @@
-<!DOCTYPE html>
-<html lang="zh-Hant">
-<head>
-  <meta charset="UTF-8">
-  <title>逸瓏公司收金業務</title>
-  <style>
-    body { font-family: "Noto Sans TC", Arial, sans-serif; margin:0; background:#f9f9f9; }
-    header { background:#1C1F33; color:#D4AF37; padding:20px; text-align:center; }
-    header h1 { margin:0; font-size:28px; }
-    main { padding:20px; }
-    h2 { text-align:center; color:#333; }
-    table { width:80%; margin:20px auto; border-collapse:collapse; background:#fff; }
-    th, td { border:1px solid #ccc; padding:10px; text-align:center; }
-    th { background:#333; color:#fff; }
-    tr:nth-child(even) { background:#f2f2f2; }
-    footer { text-align:center; padding:15px; font-size:14px; color:#666; }
-    .mode-switch { text-align:center; margin:20px; }
-    button { padding:8px 16px; margin:0 5px; cursor:pointer; }
-    .last-update { text-align:center; font-size:14px; color:#555; margin-top:10px; }
-  </style>
-</head>
-<body>
-  <header>
-    <h1>逸瓏公司收金業務</h1>
-  </header>
+<table border="1">
+  <tr>
+    <th>商品</th>
+    <th>回購</th>
+    <th>銷售</th>
+    <th>時間</th>
+  </tr>
+  <tr>
+    <td>黃金</td>
+    <td id="gold-buy">--</td>
+    <td id="gold-sell">--</td>
+    <td id="gold-time">--</td>
+  </tr>
+</table>
 
-  <main>
-    <div class="mode-switch">
-      <button onclick="setMode('mock')">使用模擬數據</button>
-      <button onclick="setMode('api')">使用真實 API</button>
-      <button onclick="loadPrices()">手動刷新</button>
-    </div>
-
-    <h2>即時金屬行情 (已調整 -35)</h2>
-    <table id="priceTable">
-      <thead>
-        <tr>
-          <th>商品</th>
-          <th>回購</th>
-          <th>銷售</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-    <div class="last-update" id="lastUpdate">最後更新時間：--</div>
-  </main>
-
-  <footer>
-    <p>免責聲明：本網站所提供行情數據僅供參考，若有侵權行為請告知刪除。</p>
-  </footer>
-
-  <script>
-    // 模擬數據
-    const mockData = {
-      gold: { buy: 235.5, sell: 237.0 },
-      silver: { buy: 28.3, sell: 29.0 },
-      platinum: { buy: 950, sell: 960 },
-      palladium: { buy: 1200, sell: 1215 }
-    };
-
-    let mode = "mock";
-    const apiUrl = "https://free.xwteam.cn/api/gold/trade"; // 免費黃金行情 API
-    const refreshInterval = 60000;
-
-    function setMode(newMode) {
-      mode = newMode;
-      loadPrices();
-    }
-
-    async function loadPrices() {
-      let data;
-      if (mode === "mock") {
-        data = mockData;
-      } else {
-        try {
-          const res = await fetch(apiUrl);
-          const json = await res.json();
-          // API 返回格式：json.data.LF 為金屬列表
-          data = {};
-          json.data.LF.forEach(item => {
-            data[item.Name] = { buy: item.BP, sell: item.SP };
-          });
-        } catch (err) {
-          console.error("API 載入失敗，改用模擬數據", err);
-          data = mockData;
-        }
-      }
-
-      const tbody = document.querySelector("#priceTable tbody");
-      tbody.innerHTML = "";
-      for (let metal in data) {
-        const adjustedBuy = data[metal].buy - 35;
-        const adjustedSell = data[metal].sell - 35;
-        const row = document.createElement("tr");
-        row.innerHTML = `
-          <td>${metal}</td>
-          <td>${adjustedBuy.toFixed(2)}</td>
-          <td>${adjustedSell.toFixed(2)}</td>
-        `;
-        tbody.appendChild(row);
-      }
-
-      document.getElementById("lastUpdate").innerText =
-        "最後更新時間：" + new Date().toLocaleTimeString();
-    }
-
-    loadPrices();
-    setInterval(loadPrices, refreshInterval);
-  </script>
-</body>
-</html>
+<script>
+  // 假設有行情 API
+  fetch("https://api.example.com/gold")
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById("gold-buy").innerText = data.buy;
+      document.getElementById("gold-sell").innerText = data.sell;
+      document.getElementById("gold-time").innerText = data.time;
+    });
+</script>
