@@ -238,8 +238,10 @@
                 <thead><tr><th>类型</th><th>价格</th></tr></thead>
                 <tbody>
                   <tr><td>足金9999</td><td><span id="goldPriceRMB">载入中...</span></td></tr>
+                  <tr><td>铂金（Pt）</td><td><span id="ptPriceRMB">载入中...</span></td></tr>
                 </tbody>
               </table>
+              <div class="note">其他贵金属（如 K 金、白银）及奢侈品（腕表、珠宝），请向职员进行查询。</div>
             </div>
 
           </div>
@@ -293,29 +295,85 @@
 
   <!-- JS：载入一次＋每 30 秒刷新＋错误处理 -->
   <script>
-    // 人民币/克：使用 xwteam，并将价格 -40（只更新足金9999）
-    async function loadRmbGoldPrice() {
-      const rmb9999El = document.getElementById("goldPriceRMB");
+    // 人民币/克：使用 xwteam
+    // - 黄金足金9999：显示 BP - 40
+    // - 铂金（Pt）：显示 BP（不做主观减点，避免混淆）
+    async function loadRmbPrices() {
+      const goldEl = document.getElementById("goldPriceRMB");
+      const ptEl = document.getElementById("ptPriceRMB");
+
+      // 初始化為載入文案
+      goldEl.innerText = "载入中...";
+      ptEl.innerText = "载入中...";
+
+      // 第一優先：xwteam 接口
       try {
         const res = await fetch("https://free.xwteam.cn/api/gold/trade", { cache: "no-store" });
         const data = await res.json();
-        const auList = data && data.data && Array.isArray(data.data.LF) ? data.data.LF : null;
-        const au = auList ? auList.find(item => item && item.Symbol === "Au") : null;
-        if (au) {
-          const rawRMB = parseFloat(au.BP);
-          const adjRMB = !isNaN(rawRMB) ? (rawRMB - 40) : null;
-          rmb9999El.innerText = (adjRMB !== null ? adjRMB.toFixed(2) + " 元/克" : "暫時無法取得");
-        } else {
-          rmb9999El.innerText = "暫時無法取得";
+        const arr = data && data.data && Array.isArray(data.data.LF) ? data.data.LF : null;
+
+        if (!arr) {
+          goldEl.innerText = "暫時無法取得";
+          ptEl.innerText = "暫時無法取得";
+          return;
         }
+
+        // Au（黃金）與 Pt（鉑金）
+        const au = arr.find(item => item && item.Symbol === "Au");
+        const pt = arr.find(item => item && item.Symbol === "Pt");
+
+        // 黃金：BP - 40
+        if (au && au.BP !== undefined) {
+          const bpAu = parseFloat(au.BP);
+          if (!isNaN(bpAu)) {
+            const displayAu = (bpAu - 40).toFixed(2) + " 元/克";
+            goldEl.innerText = displayAu;
+          } else {
+            goldEl.innerText = "暫時無法取得";
+          }
+        } else {
+          goldEl.innerText = "暫時無法取得";
+        }
+
+        // 鉑金：BP 直接顯示
+        if (pt && pt.BP !== undefined) {
+          const bpPt = parseFloat(pt.BP);
+          if (!isNaN(bpPt)) {
+            const displayPt = bpPt.toFixed(2) + " 元/克";
+            ptEl.innerText = displayPt;
+          } else {
+            ptEl.innerText = "暫時無法取得";
+          }
+        } else {
+          ptEl.innerText = "暫時無法取得";
+        }
+
+        return; // 若 xwteam 成功則結束
       } catch (err) {
-        console.error("RMB API 错误：", err);
-        rmb9999El.innerText = "暫時無法取得";
+        console.error("xwteam API 错误：", err);
       }
+
+      // 備援接口（如需）：若你有其他可用的免費 JSON 接口可在此補充
+      // 示例：假設存在某 JSON 端點返回 { pt_rmb_per_gram: 215.40, au_rmb_per_gram: 541.57 }
+      // try {
+      //   const res2 = await fetch("https://your-backup-api.example.com/v1/prices", { cache: "no-store" });
+      //   const data2 = await res2.json();
+      //   const auRmb = parseFloat(data2?.au_rmb_per_gram);
+      //   const ptRmb = parseFloat(data2?.pt_rmb_per_gram);
+      //   if (!isNaN(auRmb)) goldEl.innerText = (auRmb - 40).toFixed(2) + " 元/克";
+      //   if (!isNaN(ptRmb)) ptEl.innerText = ptRmb.toFixed(2) + " 元/克";
+      //   return;
+      // } catch (err2) {
+      //   console.error("备援 API 错误：", err2);
+      // }
+
+      // 全部失敗時
+      goldEl.innerText = "暫時無法取得";
+      ptEl.innerText = "暫時無法取得";
     }
 
     function refreshAll() {
-      loadRmbGoldPrice();
+      loadRmbPrices();
     }
 
     // 页面载入时执行一次
