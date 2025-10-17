@@ -176,7 +176,7 @@
         <ul>
           <li>透明报价：费用清晰无隐性</li>
           <li>专业检测：现场仪器检测含金量</li>
-          <li>即时付款：确认金额后即日结算</li>
+          <li>即日付款：确认金额后即日结算</li>
         </ul>
         <p class="muted">全程可观看与说明，确保安心与效率。</p>
       </aside>
@@ -242,18 +242,6 @@
               </table>
             </div>
 
-            <div class="card">
-              <h3>国际行情（黄金）</h3>
-              <div class="note">单位：美元/盎司</div>
-              <table>
-                <thead><tr><th>市场</th><th>价格</th></tr></thead>
-                <tbody>
-                  <tr><td>国际金价</td><td><span id="goldPriceUSD">载入中...</span></td></tr>
-                </tbody>
-              </table>
-              <div class="note" id="lastUpdated" style="margin-top:8px;">最后更新：载入中...</div>
-            </div>
-
           </div>
         </div>
       </details>
@@ -303,106 +291,36 @@
     </div>
   </footer>
 
-  <!-- JS：載入一次＋每 30 秒刷新＋三重備援＋最後更新時間（不用人民幣換算） -->
+  <!-- JS：载入一次＋每 30 秒刷新＋错误处理 -->
   <script>
-    // 人民幣/克：使用 xwteam，並將價格 -40（只更新足金9999）
+    // 人民币/克：使用 xwteam，并将价格 -40（只更新足金9999）
     async function loadRmbGoldPrice() {
       const rmb9999El = document.getElementById("goldPriceRMB");
       try {
         const res = await fetch("https://free.xwteam.cn/api/gold/trade", { cache: "no-store" });
         const data = await res.json();
-        const au = Array.isArray(data?.data?.LF) ? data.data.LF.find(item => item?.Symbol === "Au") : null;
+        const auList = data && data.data && Array.isArray(data.data.LF) ? data.data.LF : null;
+        const au = auList ? auList.find(item => item && item.Symbol === "Au") : null;
         if (au) {
-          const rawRMB = parseFloat(au?.BP);
+          const rawRMB = parseFloat(au.BP);
           const adjRMB = !isNaN(rawRMB) ? (rawRMB - 40) : null;
-          rmb9999El.innerText = (adjRMB !== null ? adjRMB + " 元/克" : "暫時無法取得");
+          rmb9999El.innerText = (adjRMB !== null ? adjRMB.toFixed(2) + " 元/克" : "暫時無法取得");
         } else {
           rmb9999El.innerText = "暫時無法取得";
         }
       } catch (err) {
-        console.error("RMB API 錯誤：", err);
+        console.error("RMB API 错误：", err);
         rmb9999El.innerText = "暫時無法取得";
       }
     }
 
-    // 國際金價（美元/盎司）：三重備援（不做人民幣換算）
-    async function loadUsdGoldPrice() {
-      const usdEl = document.getElementById("goldPriceUSD");
-      const updatedEl = document.getElementById("lastUpdated");
-
-      // 1) 首選：AllTick XAUUSD（你的 Token）
-      async function tryAllTick() {
-        try {
-          const url = "https://quote.alltick.io/quote-b-api/real?token=c883f9f179cc09bee9209089e701c59a-c-app&code=XAUUSD";
-          const res = await fetch(url, { cache: "no-store" });
-          const data = await res.json();
-          const priceUSD = data?.data?.last_price;
-          if (priceUSD && !isNaN(Number(priceUSD))) {
-            usdEl.innerText = Number(priceUSD).toFixed(2) + " 美元/盎司";
-            updatedEl.innerText = "最后更新：" + new Date().toLocaleString();
-            return true;
-          }
-          return false;
-        } catch (e) {
-          return false;
-        }
-      }
-
-      // 2) 備援一：xwteam 的 BP_USD 欄位（若存在直接用）
-      async function tryXwteamUsd() {
-        try {
-          const res = await fetch("https://free.xwteam.cn/api/gold/trade", { cache: "no-store" });
-          const data = await res.json();
-          const au = Array.isArray(data?.data?.LF) ? data.data.LF.find(item => item?.Symbol === "Au") : null;
-          const priceUSD = au?.BP_USD;
-          if (priceUSD && !isNaN(Number(priceUSD))) {
-            usdEl.innerText = Number(priceUSD).toFixed(2) + " 美元/盎司";
-            updatedEl.innerText = "最后更新：" + new Date().toLocaleString();
-            return true;
-          }
-          return false;
-        } catch (err) {
-          return false;
-        }
-      }
-
-      // 3) 備援二：其他免費來源（若返回包含美元/盎司則使用）
-      async function tryAltFreeSource() {
-        try {
-          // 示例：aa1.cn 提供的 trade 接口（若響應中有美元盎司欄位則取用）
-          const res = await fetch("https://api.aa1.cn/doc/trade.html", { cache: "no-store" });
-          // 注意：該端點可能返回文檔頁；實際使用時需替換為其提供的 JSON 行情端點
-          // 這裡僅作備援示範，若未取到有效值則返回 false
-          // 可擴展為你確定的其他免費 JSON 接口
-          return false;
-        } catch (err) {
-          return false;
-        }
-      }
-
-      // 順序嘗試：AllTick -> xwteam USD -> 其他免費來源
-      const ok1 = await tryAllTick();
-      if (ok1) return;
-
-      const ok2 = await tryXwteamUsd();
-      if (ok2) return;
-
-      const ok3 = await tryAltFreeSource();
-      if (ok3) return;
-
-      // 全部失敗時
-      usdEl.innerText = "暫時無法取得";
-      updatedEl.innerText = "最后更新：暫無";
-    }
-
     function refreshAll() {
       loadRmbGoldPrice();
-      loadUsdGoldPrice();
     }
 
-    // 頁面載入時執行一次
+    // 页面载入时执行一次
     refreshAll();
-    // 每隔 30 秒自動刷新
+    // 每隔 30 秒自动刷新
     setInterval(refreshAll, 30000);
   </script>
 
