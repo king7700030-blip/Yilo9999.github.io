@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>逸瓏回收黄金业务｜企业级官网示范</title>
+  <title>逸瓏回收黄金业务</title>
   <meta name="description" content="逸瓏回收黄金业务：即时免费查价、专业检测、现场报价与付款。提供实时回收与国际黄金行情参考。">
   <style>
     :root{
@@ -32,7 +32,7 @@
     img{max-width:100%;display:block}
     .container{max-width:var(--container);margin:0 auto;padding:0 20px}
 
-    /* Header & Nav */
+    /* Header & Nav（純HTML 的黏性效果靠 CSS） */
     .site-header{
       position:sticky;top:0;z-index:20;
       background:linear-gradient(180deg,#5a3a1a 0%, #4b2f15 100%);
@@ -104,7 +104,7 @@
     .stat{font-size:22px;font-weight:800;color:var(--ink)}
     .label{color:var(--muted);font-size:13px}
 
-    /* Pricing */
+    /* Pricing（純HTML互動用 details/summary） */
     .pricing-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
     .card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
     .card h3{margin:4px 0 8px;color:var(--blue)}
@@ -163,7 +163,7 @@
         <div class="logo" aria-hidden="true"></div>
         <div>
           <div style="font-weight:800">逸瓏回收黄金业务</div>
-          <small style="opacity:.85">诚信报价｜即时更新</small>
+          <small style="opacity:.85">诚信报价 诚心服务</small>
         </div>
       </div>
       <nav class="nav-links" aria-label="主导航">
@@ -181,7 +181,7 @@
     <div class="container hero-inner">
       <div>
         <h1>即时报价与专业检测，让黄金回收更安心</h1>
-        <p>免费线上初步估价，现场专业检测与即日付款。价格仅供参考，实际回收以当天门市报价为准。</p>
+        <p>免费线上初步估价，现场专业检测与即时付款。价格仅供参考，实际回收以当天门市报价为准。</p>
         <div class="badges">
           <span class="badge">免费查价</span>
           <span class="badge">即时更新</span>
@@ -197,7 +197,7 @@
         <ul>
           <li>透明报价：费用清晰无隐性</li>
           <li>专业检测：现场仪器检测含金量</li>
-          <li>即时付款：确认金额后立即结算</li>
+          <li>即时付款：确认金额后即日结算</li>
         </ul>
         <p class="muted">全程可观看与说明，确保安心与效率。</p>
       </aside>
@@ -222,7 +222,7 @@
         </div>
         <div class="step">
           <span class="badge-small">Step 3</span>
-          <h3>定价与即时付款</h3>
+          <h3>定价与即日付款</h3>
           <p>依当日报价与成色计算，现金或转账即日收买。</p>
         </div>
       </div>
@@ -241,7 +241,7 @@
     </div>
   </section>
 
-  <!-- Pricing -->
+  <!-- Pricing: details/summary 控制顯示 -->
   <section id="pricing">
     <div class="container">
       <h2 class="section-title">报价参考</h2>
@@ -251,36 +251,27 @@
         <summary>展开/收起报价表格</summary>
         <div class="pricing-content">
           <div class="pricing-grid">
-
-            <!-- RMB 回收 -->
             <div class="card">
               <h3>逸瓏实时回收</h3>
               <div class="note">单位：人民币/克</div>
               <table>
-                <thead>
-                  <tr><th>类型</th><th>价格</th></tr>
-                </thead>
+                <thead><tr><th>类型</th><th>价格</th></tr></thead>
                 <tbody>
                   <tr><td>足金9999</td><td><span id="goldPriceRMB">载入中...</span></td></tr>
                 </tbody>
               </table>
             </div>
-
-            <!-- USD 國際金價 -->
             <div class="card">
               <h3>国际行情（黄金）</h3>
               <div class="note">单位：美元/盎司</div>
               <table>
-                <thead>
-                  <tr><th>市场</th><th>价格</th></tr>
-                </thead>
+                <thead><tr><th>市场</th><th>价格</th></tr></thead>
                 <tbody>
                   <tr><td>国际金价</td><td><span id="goldPriceUSD">载入中...</span></td></tr>
                 </tbody>
               </table>
               <div class="note" id="lastUpdated" style="margin-top:8px;">最后更新：载入中...</div>
             </div>
-
           </div>
         </div>
       </details>
@@ -330,7 +321,7 @@
     </div>
   </footer>
 
-  <!-- JS：載入一次＋每 30 秒刷新＋錯誤處理＋最後更新時間 -->
+  <!-- 整合 API 的 JS：載入一次＋每 30 秒刷新＋錯誤處理＋最後更新時間 -->
   <script>
     // 人民幣/克：使用 xwteam，並將價格 -40（只更新足金9999）
     async function loadRmbGoldPrice() {
@@ -352,45 +343,27 @@
       }
     }
 
-    // 美元/盎司：優先使用 AllTick，失敗則回退到 xwteam 的 BP_USD
+    // 美元/盎司：使用 AllTick（XAUUSD），用你提供的 Token
     async function loadUsdGoldPrice() {
       const usdEl = document.getElementById("goldPriceUSD");
       const updatedEl = document.getElementById("lastUpdated");
-
-      async function tryAllTick() {
-        try {
-          // AllTick 免費接口（免 Key）
-          const res = await fetch("https://api.alltick.co/quote/gold", { cache: "no-store" });
-          const data = await res.json();
-          const priceUSD = data?.price || data?.data?.price || null;
-          if (priceUSD) {
-            usdEl.innerText = priceUSD + " 美元/盎司";
-            updatedEl.innerText = "最后更新：" + new Date().toLocaleString();
-            return true;
-          }
-          return false;
-        } catch (e) {
-          return false;
-        }
-      }
-
-      async function fallbackXwteam() {
-        try {
-          const res = await fetch("https://free.xwteam.cn/api/gold/trade", { cache: "no-store" });
-          const data = await res.json();
-          const au = data?.data?.LF?.find(item => item?.Symbol === "Au");
-          const priceUSD = au?.BP_USD;
-          usdEl.innerText = (priceUSD ? priceUSD + " 美元/盎司" : "暫無");
+      try {
+        const url = "https://quote.alltick.io/quote-b-api/real?token=c883f9f179cc09bee9209089e701c59a-c-app&code=XAUUSD";
+        const res = await fetch(url, { cache: "no-store" });
+        const data = await res.json();
+        const priceUSD = data?.data?.last_price;
+        if (priceUSD) {
+          usdEl.innerText = priceUSD + " 美元/盎司";
           updatedEl.innerText = "最后更新：" + new Date().toLocaleString();
-        } catch (err) {
-          console.error("USD 備援 API 錯誤：", err);
-          usdEl.innerText = "暫時無法取得";
-          updatedEl.innerText = "最后更新：暫無";
+        } else {
+          usdEl.innerText = "暫無";
+          updatedEl.innerText = "最后更新：" + new Date().toLocaleString();
         }
+      } catch (err) {
+        console.error("AllTick API 錯誤：", err);
+        usdEl.innerText = "暫時無法取得";
+        updatedEl.innerText = "最后更新：暫無";
       }
-
-      const ok = await tryAllTick();
-      if (!ok) await fallbackXwteam();
     }
 
     function refreshAll() {
