@@ -137,21 +137,6 @@
 
     /* Footer */
     .site-footer{background:#f4f4f5;border-top:1px solid var(--line);padding:26px 0;color:var(--muted);font-size:13px}
-
-    /* Responsive */
-    @media (max-width: 960px){
-      .hero-inner{grid-template-columns:1fr}
-      .steps{grid-template-columns:1fr 1fr}
-      .trust{grid-template-columns:1fr 1fr}
-      .pricing-grid{grid-template-columns:1fr}
-      .gallery-grid{grid-template-columns:1fr 1fr}
-    }
-    @media (max-width: 640px){
-      .steps{grid-template-columns:1fr}
-      .trust{grid-template-columns:1fr 1fr}
-      .gallery-grid{grid-template-columns:1fr}
-      .hero h1{font-size:28px}
-    }
   </style>
 </head>
 <body>
@@ -222,7 +207,7 @@
         </div>
         <div class="step">
           <span class="badge-small">Step 3</span>
-          <h3>定价与即日付款</h3>
+          <h3>定价与即时付款</h3>
           <p>依当日报价与成色计算，现金或转账即时收买。</p>
         </div>
       </div>
@@ -257,8 +242,8 @@
               <table>
                 <thead><tr><th>类型</th><th>价格</th></tr></thead>
                 <tbody>
+                  <!-- 只保留足金9999 -->
                   <tr><td>足金9999</td><td><span id="goldPriceRMB">载入中...</span></td></tr>
-                  <tr><td>足金999</td><td><span id="goldPriceRMB_999">载入中...</span></td></tr>
                 </tbody>
               </table>
             </div>
@@ -324,54 +309,76 @@
 
   <!-- 整合 API 的 JS：載入一次＋每 30 秒刷新＋錯誤處理＋最後更新時間 -->
   <script>
-    async function loadGoldPrice() {
+    // 人民幣/克：使用 xwteam，並將價格 -40（只更新足金9999）
+    async function loadRmbGoldPrice() {
       const rmb9999El = document.getElementById("goldPriceRMB");
-      const rmb999El = document.getElementById("goldPriceRMB_999");
-      const usdEl = document.getElementById("goldPriceUSD");
-      const updatedEl = document.getElementById("lastUpdated");
-
       try {
         const res = await fetch("https://free.xwteam.cn/api/gold/trade", { cache: "no-store" });
         const data = await res.json();
-
-        // 嘗試抓 Au 資料（保護性取值避免報錯）
-        const goldLF = data?.data?.LF || [];
-        const au = Array.isArray(goldLF) ? goldLF.find(item => item?.Symbol === "Au") : null;
-
+        const au = data?.data?.LF?.find(item => item?.Symbol === "Au");
         if (au) {
-          // 原始人民幣/克價格
           const rawRMB = parseFloat(au?.BP);
-          // 調整後（-40）
           const adjRMB = !isNaN(rawRMB) ? (rawRMB - 40) : null;
-
-          // 美元/盎司（若 API 無此欄位則顯示暫無）
-          const priceUSD = au?.BP_USD;
-
-          if (rmb9999El) rmb9999El.innerText = (adjRMB !== null ? adjRMB + " 元/克" : "暫時無法取得");
-          if (rmb999El)  rmb999El.innerText  = (adjRMB !== null ? adjRMB + " 元/克" : "暫時無法取得");
-          if (usdEl)     usdEl.innerText     = (priceUSD ? priceUSD + " 美元/盎司" : "暫無");
-
-          if (updatedEl) updatedEl.innerText = "最后更新：" + new Date().toLocaleString();
+          rmb9999El.innerText = (adjRMB !== null ? adjRMB + " 元/克" : "暫時無法取得");
         } else {
-          if (rmb9999El) rmb9999El.innerText = "暫時無法取得";
-          if (rmb999El)  rmb999El.innerText  = "暫時無法取得";
-          if (usdEl)     usdEl.innerText     = "暫時無法取得";
-          if (updatedEl) updatedEl.innerText = "最后更新：暫無";
+          rmb9999El.innerText = "暫時無法取得";
         }
       } catch (err) {
-        console.error("API 錯誤：", err);
-        if (rmb9999El) rmb9999El.innerText = "暫時無法取得";
-        if (rmb999El)  rmb999El.innerText  = "暫時無法取得";
-        if (usdEl)     usdEl.innerText     = "暫時無法取得";
-        if (updatedEl) updatedEl.innerText = "最后更新：暫無";
+        console.error("RMB API 錯誤：", err);
+        rmb9999El.innerText = "暫時無法取得";
       }
     }
 
-    // 頁面載入時執行一次
-    loadGoldPrice();
+    // 美元/盎司：優先使用 AllTick，失敗則回退到 xwteam 的 BP_USD
+    async function loadUsdGoldPrice() {
+      const usdEl = document.getElementById("goldPriceUSD");
+      const updatedEl = document.getElementById("lastUpdated");
 
+      async function tryAllTick() {
+        try {
+          // AllTick 簡易接口示例（免費、免 Key）
+          const res = await fetch("https://api.alltick.co/quote/gold", { cache: "no-store" });
+          const data = await res.json();
+          const priceUSD = data?.price || data?.data?.price || null;
+          if (priceUSD) {
+            usdEl.innerText = priceUSD + " 美元/盎司";
+            updatedEl.innerText = "最后更新：" + new Date().toLocaleString();
+            return true;
+          }
+          return false;
+        } catch (e) {
+          return false;
+        }
+      }
+
+      async function fallbackXwteam() {
+        try {
+          const res = await fetch("https://free.xwteam.cn/api/gold/trade", { cache: "no-store" });
+          const data = await res.json();
+          const au = data?.data?.LF?.find(item => item?.Symbol === "Au");
+          const priceUSD = au?.BP_USD;
+          usdEl.innerText = (priceUSD ? priceUSD + " 美元/盎司" : "暫無");
+          updatedEl.innerText = "最后更新：" + new Date().toLocaleString();
+        } catch (err) {
+          console.error("USD 備援 API 錯誤：", err);
+          usdEl.innerText = "暫時無法取得";
+          updatedEl.innerText = "最后更新：暫無";
+        }
+      }
+
+      const ok = await tryAllTick();
+      if (!ok) await fallbackXwteam();
+    }
+
+    function refreshAll() {
+      loadRmbGoldPrice();
+      loadUsdGoldPrice();
+    }
+
+    // 頁面載入時執行一次
+    refreshAll();
     // 每隔 30 秒自動刷新
-    setInterval(loadGoldPrice, 30000);
+    setInterval(refreshAll, 30000);
   </script>
 
 </body>
