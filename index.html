@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>逸瓏回收黄金业务</title>
+  <title>逸瓏回收黄金业务官网</title>
   <meta name="description" content="逸瓏回收黄金业务：即时免费查价、专业检测、现场报价与付款。提供实时回收与国际黄金行情参考。">
   <style>
     :root{
@@ -163,7 +163,7 @@
         <div class="logo" aria-hidden="true"></div>
         <div>
           <div style="font-weight:800">逸瓏回收黄金业务</div>
-          <small style="opacity:.85">诚信报价 诚心服务</small>
+          <small style="opacity:.85">诚信报价｜即时更新</small>
         </div>
       </div>
       <nav class="nav-links" aria-label="主导航">
@@ -323,13 +323,13 @@
 
   <!-- 整合 API 的 JS：載入一次＋每 30 秒刷新＋錯誤處理＋最後更新時間 -->
   <script>
-    // 人民幣/克：使用 xwteam，並將價格 -40（只更新足金9999）
+    // 人民幣/克：使用 xwteam，並將價格 -45（只更新足金9999）
     async function loadRmbGoldPrice() {
       const rmb9999El = document.getElementById("goldPriceRMB");
       try {
         const res = await fetch("https://free.xwteam.cn/api/gold/trade", { cache: "no-store" });
         const data = await res.json();
-        const au = data?.data?.LF?.find(item => item?.Symbol === "Au");
+        const au = Array.isArray(data?.data?.LF) ? data.data.LF.find(item => item?.Symbol === "Au") : null;
         if (au) {
           const rawRMB = parseFloat(au?.BP);
           const adjRMB = !isNaN(rawRMB) ? (rawRMB - 40) : null;
