@@ -4,80 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>逸璞回收黄金业务</title>
+  <link rel="stylesheet" href="styles.css">
   <style>
-    body {
-      font-family: "Microsoft YaHei", "PingFang SC", "SimSun", sans-serif;
-      margin: 0;
-      background-color: #fff;
-      color: #333;
-    }
-    header {
-      background-color: #5a3a1a;
-      color: #fff;
-      text-align: center;
-      padding: 1rem;
-      font-size: 1.5rem;
-      font-weight: bold;
-    }
-    .hero {
-      background-color: #d4af37;
-      color: #fff;
-      text-align: center;
-      padding: 2rem 1rem;
-    }
-    .hero h1 {
-      margin: 0;
-      font-size: 2rem;
-    }
-    .hero p {
-      margin: 0.5rem 0;
-    }
-    .btn {
-      display: inline-block;
-      margin-top: 1rem;
-      padding: 0.8rem 1.5rem;
-      background-color: #0056a3;
-      color: #fff;
-      border-radius: 6px;
-      text-decoration: none;
-      font-weight: bold;
-    }
-    .section {
-      padding: 2rem 1rem;
-      text-align: center;
-    }
-    .section h2 {
-      color: #d4af37;
-      margin-bottom: 1rem;
-    }
-    .steps {
-      display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
-    }
-    .step {
-      background: #f9f9f9;
-      padding: 1rem;
-      border-radius: 8px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-    .step h3 {
-      margin: 0.5rem 0;
-      color: #0056a3;
-    }
-    .testimonial {
-      background-color: #d4af37;
-      color: #fff;
-      padding: 2rem 1rem;
-      font-size: 1.2rem;
-      font-weight: bold;
-    }
-    footer {
-      text-align: center;
-      padding: 1.5rem;
-    }
-    footer .btn {
-      background-color: #0056a3;
+    /* 額外控制報價表格顯示 */
+    #pricing-section {
+      display: none;
+      margin-top: 2rem;
     }
   </style>
 </head>
@@ -88,7 +20,8 @@
   <section class="hero">
     <h1>即时报价</h1>
     <p>免费查价｜即时更新｜现场价格为准</p>
-    <a href="#" class="btn">立即查价</a>
+    <!-- 改成觸發顯示報價表格 -->
+    <button id="show-pricing" class="btn">立即查价</button>
   </section>
 
   <section class="section">
@@ -113,9 +46,57 @@
     10,000+ 顾客选择我们
   </section>
 
+  <!-- 隱藏的報價表格區塊 -->
+  <section id="pricing-section" class="cards container">
+    <article class="card">
+      <h2>逸璞实时回收</h2>
+      <p class="section-note">单位：人民币/克（示范数据）</p>
+      <table class="price-table" id="table-yilong-gold"></table>
+    </article>
+
+    <article class="card">
+      <h2>国际行情（黄金）</h2>
+      <p class="section-note">单位：美元/盎司 或 港元/两（示范数据）</p>
+      <table class="price-table" id="table-global-gold"></table>
+    </article>
+  </section>
+
   <footer>
     <a href="#" class="btn">联系我们</a>
   </footer>
+
+  <script>
+    // 假數據
+    const yilongGoldData = [
+      { type: "足金9999", price: "480 元/克" },
+      { type: "足金999", price: "475 元/克" },
+      { type: "18K金", price: "350 元/克" }
+    ];
+
+    const globalGoldData = [
+      { type: "纽约金价", price: "1900 美元/盎司" },
+      { type: "香港金价", price: "17000 港元/两" }
+    ];
+
+    // 填充表格
+    function fillTable(tableId, data) {
+      const table = document.getElementById(tableId);
+      let html = "<tr><th>类型</th><th>价格</th></tr>";
+      data.forEach(item => {
+        html += `<tr><td>${item.type}</td><td>${item.price}</td></tr>`;
+      });
+      table.innerHTML = html;
+    }
+
+    // 綁定按鈕事件
+    document.getElementById("show-pricing").addEventListener("click", () => {
+      document.getElementById("pricing-section").style.display = "block";
+      fillTable("table-yilong-gold", yilongGoldData);
+      fillTable("table-global-gold", globalGoldData);
+      // 自動滾動到報價表格
+      document.getElementById("pricing-section").scrollIntoView({ behavior: "smooth" });
+    });
+  </script>
 
 </body>
 </html>
