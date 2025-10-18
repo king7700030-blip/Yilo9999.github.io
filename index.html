@@ -291,7 +291,7 @@
   <script>
     // 人民幣/克：使用 xwteam
     // - 足金999：顯示 BP - 38
-    // - 鉑金（Pt950）：顯示 BP - 40
+    // - 鉑金（Pt950）：顯示 BP - 36
     async function loadRmbPrices() {
       const rmbGoldEl = document.getElementById("goldPriceRMB");
       const rmbPtEl = document.getElementById("ptPriceRMB");
@@ -320,7 +320,7 @@
         const pt = list.find(item => item?.Symbol === "Pt");
         if (pt && pt.BP !== undefined) {
           const bpPt = parseFloat(pt.BP);
-          rmbPtEl.innerText = !isNaN(bpPt) ? (bpPt - 40).toFixed(2) + " 元/克" : "暫時無法取得";
+          rmbPtEl.innerText = !isNaN(bpPt) ? (bpPt - 36).toFixed(2) + " 元/克" : "暫時無法取得";
         } else {
           rmbPtEl.innerText = "暫時無法取得";
         }
