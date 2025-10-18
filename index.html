@@ -272,14 +272,11 @@
       </div>
 
       <!-- 微信 QR 圖片面板（使用線上圖片 URL，避免本地路徑問題） -->
-      <div id="wechatPanel" class="wechat-panel" style="display:none">
-        <img id="wechatImg" 
-             src="https://copilot.microsoft.com/th/id/BCO.59c29f5a-2775-48b4-bd11-5327672e83dc.png" 
-             alt="WeChat QR Code">
-        <div class="wechat-tip" data-i18n="wechatTip">扫描上面的 QR Code，加我为朋友。</div>
-        <!-- 顯示載入或錯誤提示 -->
-        <div id="wechatError" class="note" style="color:#ffe;display:none">提示：图片未能显示。你也可以提供新的微信 QR 图片 URL，我來幫你更新。</div>
-      </div>
+      <div id="wechatPanel" class="wechat-panel">
+  <img id="wechatImg" src="wechat-code.jpg" alt="WeChat QR Code">
+  <div class="wechat-tip" data-i18n="wechatTip">扫描上面的 QR Code，加我为朋友。</div>
+  <div id="wechatError" class="note" style="color:#ffe;display:none">提示：图片未能显示，请确认文件路径正确或与此 HTML 同目录。</div>
+</div>
     </div>
   </div>
 </section>
