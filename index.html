@@ -4,309 +4,36 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>逸瓏回收黄金业务官网</title>
-  <meta name="description" content="逸瓏回收黄金业务：即时免费查价、专业检测、现场报价与付款。提供实时回收与国际黄金行情参考。">
   <style>
-    :root{
-      --gold:#d4af37;
-      --gold-dark:#b9932f;
-      --blue:#0056a3;
-      --blue-dark:#00457f;
-      --ink:#333;
-      --muted:#666;
-      --bg:#fff;
-      --card:#f7f7f8;
-      --line:#e6e6e6;
-      --shadow:0 8px 24px rgba(0,0,0,0.08);
-      --radius:12px;
-      --radius-sm:8px;
-      --container:1100px;
-    }
-    *{box-sizing:border-box}
-    html,body{margin:0;padding:0;background:var(--bg);color:var(--ink)}
-    body{
-      font-family:"Microsoft YaHei","PingFang SC","Noto Sans SC","SimSun",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-      line-height:1.6;
-    }
-    a{color:var(--blue);text-decoration:none}
-    a:hover{text-decoration:underline}
-    img{max-width:100%;display:block}
-    .container{max-width:var(--container);margin:0 auto;padding:0 20px}
-
-    /* Header & Nav（黏性效果） */
-    .site-header{
-      position:sticky;top:0;z-index:20;
-      background:linear-gradient(180deg,#5a3a1a 0%, #4b2f15 100%);
-      color:#fff;border-bottom:1px solid rgba(255,255,255,0.1);
-      box-shadow:0 4px 16px rgba(0,0,0,0.15);
-    }
-    .nav{display:flex;align-items:center;justify-content:space-between;padding:12px 0}
-    .brand{display:flex;align-items:center;gap:12px;font-weight:800;letter-spacing:0.5px}
-    .brand .logo{width:36px;height:36px;border-radius:50%;background:radial-gradient(circle at 30% 30%, #ffe28a, var(--gold));box-shadow:inset 0 0 10px rgba(0,0,0,0.2);border:1px solid rgba(255,255,255,0.35)}
-    .nav-links{display:flex;gap:18px;flex-wrap:wrap}
-    .nav-links a{color:#fff;opacity:0.9;padding:8px 12px;border-radius:8px}
-    .nav-links a:hover{opacity:1;background:rgba(255,255,255,0.08)}
-
-    /* Hero */
-    .hero{background:linear-gradient(180deg, var(--gold) 0%, var(--gold-dark) 100%);color:#fff;padding:64px 0 40px}
-    .hero-inner{display:grid;grid-template-columns:1.1fr 0.9fr;gap:32px;align-items:center}
-    .hero h1{margin:0 0 12px;font-size:34px;line-height:1.25;letter-spacing:0.2px;text-shadow:0 2px 10px rgba(0,0,0,0.2)}
-    .hero p{margin:0 0 14px;opacity:0.95}
-    .badges{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
-    .badge{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.35);color:#fff;padding:6px 10px;border-radius:999px;font-size:13px}
-    .cta-row{display:flex;gap:12px;margin-top:16px;flex-wrap:wrap}
-    .btn{display:inline-flex;align-items:center;gap:8px;padding:12px 18px;border-radius:10px;border:1px solid transparent;cursor:pointer;font-weight:700;transition:transform 0.06s ease, box-shadow 0.2s}
-    .btn-primary{background:var(--blue);color:#fff;box-shadow:var(--shadow)}
-    .btn-primary:hover{background:var(--blue-dark);transform:translateY(-1px)}
-    .btn-ghost{background:rgba(255,255,255,0.15);color:#fff;border:1px solid rgba(255,255,255,0.4)}
-    .btn-ghost:hover{background:rgba(255,255,255,0.25)}
-
-    .hero-card{background:#fff;color:var(--ink);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px;border:1px solid var(--line)}
-    .hero-card h3{margin:0 0 8px;color:var(--blue)}
-    .hero-card ul{margin:0;padding-left:18px}
-    .muted{color:var(--muted)}
-
-    /* Sections */
-    section{padding:56px 0;border-bottom:1px solid var(--line)}
-    .section-title{font-size:24px;margin:0 0 22px;color:var(--gold-dark);text-align:center}
-    .section-sub{max-width:720px;margin:0 auto 26px;text-align:center;color:var(--muted)}
-
-    /* Process */
-    .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
-    .step{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
-    .step h3{margin:8px 0;color:var(--blue)}
-    .step p{margin:0;color:var(--muted)}
-    .badge-small{display:inline-block;background:rgba(0,86,163,0.08);color:var(--blue);border:1px solid rgba(0,86,163,0.25);padding:4px 8px;border-radius:999px;font-size:12px}
-
-    /* Trust */
-    .trust{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
-    .trust .card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:18px;text-align:center;box-shadow:var(--shadow)}
-    .stat{font-size:22px;font-weight:800;color:var(--ink)}
-    .label{color:var(--muted);font-size:13px}
-
-    /* Pricing（details/summary） */
-    .pricing-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
-    .card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
-    .card h3{margin:4px 0 8px;color:var(--blue)}
-    .note{color:var(--muted);font-size:13px;margin-bottom:10px}
-    table{width:100%;border-collapse:collapse}
-    th,td{border:1px solid var(--line);padding:10px;text-align:center}
-    th{background:var(--card);color:#111}
-    tr:hover td{background:#fafafa}
-    details.pricing-toggle{background:#fff;border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
-    details.pricing-toggle summary{
-      list-style:none;padding:14px 18px;font-weight:700;color:#fff;
-      background:linear-gradient(180deg, var(--gold) 0%, var(--gold-dark) 100%);
-      border-radius:var(--radius);
-    }
-    details[open].pricing-toggle summary{border-bottom-left-radius:0;border-bottom-right-radius:0}
-    .pricing-content{padding:18px}
-
-    /* Gallery */
-    .gallery-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
-    .photo{border-radius:var(--radius);overflow:hidden;border:1px solid var(--line);box-shadow:var(--shadow);background:#fff}
-    .photo img{aspect-ratio:4/3;object-fit:cover}
-    .photo figcaption{padding:10px;color:var(--muted);font-size:13px}
-
-    /* CTA bottom */
-    .cta-box{background:linear-gradient(180deg, var(--gold) 0%, var(--gold-dark) 100%);color:#fff;border-radius:var(--radius);padding:22px;box-shadow:var(--shadow)}
-    .cta-box h3{margin:0 0 6px}
-    .cta-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:10px}
-    .btn-light{background:#fff;color:var(--blue);border:1px solid var(--line)}
-    .btn-light:hover{background:#f6f6f6}
-
-    /* Footer */
-    .site-footer{background:#f4f4f5;border-top:1px solid var(--line);padding:26px 0;color:var(--muted);font-size:13px}
-
-    /* Responsive */
-    @media (max-width: 960px){
-      .hero-inner{grid-template-columns:1fr}
-      .steps{grid-template-columns:1fr 1fr}
-      .trust{grid-template-columns:1fr 1fr}
-      .pricing-grid{grid-template-columns:1fr}
-      .gallery-grid{grid-template-columns:1fr 1fr}
-    }
-    @media (max-width: 640px){
-      .steps{grid-template-columns:1fr}
-      .trust{grid-template-columns:1fr 1fr}
-      .gallery-grid{grid-template-columns:1fr}
-      .hero h1{font-size:28px}
-    }
+    body { font-family: "Microsoft YaHei", sans-serif; background:#fff; color:#333; }
+    .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+    table { width:100%; border-collapse: collapse; margin-top:10px; }
+    th, td { border:1px solid #ddd; padding:10px; text-align:center; }
+    th { background:#f7f7f7; }
+    .note { color:#666; font-size:13px; margin-top:8px; }
   </style>
 </head>
 <body>
+  <div class="container">
+    <h2>逸瓏实时回收</h2>
+    <div class="note">单位：人民币/克</div>
+    <table>
+      <thead>
+        <tr><th>类型</th><th>价格</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>足金9999</td><td><span id="goldPriceRMB">载入中...</span></td></tr>
+        <tr><td>铂金（Pt）</td><td><span id="ptPriceRMB">载入中...</span></td></tr>
+      </tbody>
+    </table>
+    <div class="note">其他贵金属（如 K 金、白银）及奢侈品（腕表、珠宝），请向职员进行查询。</div>
+  </div>
 
-  <!-- Header & Nav -->
-  <header class="site-header">
-    <div class="container nav">
-      <div class="brand">
-        <div class="logo" aria-hidden="true"></div>
-        <div>
-          <div style="font-weight:800">逸瓏回收黄金业务</div>
-          <small style="opacity:.85">诚信报价｜即时更新</small>
-        </div>
-      </div>
-      <nav class="nav-links" aria-label="主导航">
-        <a href="#process">流程</a>
-        <a href="#trust">优势</a>
-        <a href="#pricing">报价</a>
-        <a href="#gallery">实景</a>
-        <a href="#contact">联络</a>
-      </nav>
-    </div>
-  </header>
-
-  <!-- Hero -->
-  <section class="hero">
-    <div class="container hero-inner">
-      <div>
-        <h1>即时报价与专业检测，让黄金回收更安心</h1>
-        <p>免费线上初步估价，现场专业检测与即时付款。价格仅供参考，实际回收以当天门市报价为准。</p>
-        <div class="badges">
-          <span class="badge">免费查价</span>
-          <span class="badge">即时更新</span>
-          <span class="badge">现场价为准</span>
-        </div>
-        <div class="cta-row">
-          <a href="#pricing" class="btn btn-primary">立即查价</a>
-          <a href="#process" class="btn btn-ghost">查看回收流程</a>
-        </div>
-      </div>
-      <aside class="hero-card" aria-label="服务亮点">
-        <h3>为什么选择我们？</h3>
-        <ul>
-          <li>透明报价：费用清晰无隐性</li>
-          <li>专业检测：现场仪器检测含金量</li>
-          <li>即日付款：确认金额后即日结算</li>
-        </ul>
-        <p class="muted">全程可观看与说明，确保安心与效率。</p>
-      </aside>
-    </div>
-  </section>
-
-  <!-- Process -->
-  <section id="process">
-    <div class="container">
-      <h2 class="section-title">回收流程</h2>
-      <p class="section-sub">简单三步，透明可见：咨询 → 检测 → 定价与付款。</p>
-      <div class="steps">
-        <div class="step">
-          <span class="badge-small">Step 1</span>
-          <h3>咨询与初步估价</h3>
-          <p>提供饰品成色与重量（无需拆开），线上免费估价，仅供参考。</p>
-        </div>
-        <div class="step">
-          <span class="badge-small">Step 2</span>
-          <h3>到店/快递检测</h3>
-          <p>专业仪器检测含金量与净重，全程可观看并现场说明。</p>
-        </div>
-        <div class="step">
-          <span class="badge-small">Step 3</span>
-          <h3>定价与即日付款</h3>
-          <p>依当日报价与成色计算，现金或转账即日收买。</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Trust -->
-  <section id="trust">
-    <div class="container">
-      <h2 class="section-title">优势与数据</h2>
-      <p class="section-sub">真实口碑与规范流程，帮助你快速做决定。</p>
-      <div class="trust">
-        <div class="card"><div class="stat">15分钟</div><div class="label">报价平均时长</div></div>
-        <div class="card"><div class="stat">24/7</div><div class="label">电话咨询响应</div></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Pricing -->
-  <section id="pricing">
-    <div class="container">
-      <h2 class="section-title">报价参考</h2>
-      <p class="section-sub">以下为动态示范数据，实际回收价以当天门市或客服确认为准。</p>
-
-      <details class="pricing-toggle">
-        <summary>展开/收起报价表格</summary>
-        <div class="pricing-content">
-          <div class="pricing-grid">
-
-            <div class="card">
-              <h3>逸瓏实时回收</h3>
-              <div class="note">单位：人民币/克</div>
-              <table>
-                <thead><tr><th>类型</th><th>价格</th></tr></thead>
-                <tbody>
-                  <tr><td>足金9999</td><td><span id="goldPriceRMB">载入中...</span></td></tr>
-                  <tr><td>铂金（Pt）</td><td><span id="ptPriceRMB">载入中...</span></td></tr>
-                </tbody>
-              </table>
-              <div class="note">其他贵金属（如 K 金、白银）及奢侈品（腕表、珠宝），请向职员进行查询。</div>
-            </div>
-
-          </div>
-        </div>
-      </details>
-    </div>
-  </section>
-
-  <!-- Gallery -->
-  <section id="gallery">
-    <div class="container">
-      <h2 class="section-title">业务实景</h2>
-      <p class="section-sub">我们以专业与透明为核心，以下为检测与服务实景展示。</p>
-      <div class="gallery-grid">
-        <figure class="photo">
-          <img src="https://img.shoplineapp.com/media/image_clips/60f7fea2377fef00326885b2/original.jpeg?1626865314" alt="黄金检测流程与称重示意">
-          <figcaption>现场称重与材质识别</figcaption>
-        </figure>
-        <figure class="photo">
-          <img src="https://img.shoplineapp.com/media/image_clips/64423c08e8552200140fff5b/original.jpg?1682062344" alt="专业仪器检测黄金纯度">
-          <figcaption>仪器检测含金量</figcaption>
-        </figure>
-        <figure class="photo">
-          <img src="https://d31s2twqjmxdiw.cloudfront.net/00/004/148/55b8536745c54a289314f588026a774f.jpg" alt="门市回收现场与顾客互动">
-          <figcaption>门市现场与顾客沟通</figcaption>
-        </figure>
-      </div>
-    </div>
-  </section>
-
-  <!-- Bottom CTA -->
-  <section id="contact">
-    <div class="container">
-      <div class="cta-box">
-        <h3>准备开始回收？我们来协助你</h3>
-        <p class="muted">提交饰品信息即可获得初步估价，再进行专业检测后即日付款。</p>
-        <div class="cta-actions">
-          <a href="#pricing" class="btn btn-light">查看报价</a>
-          <a href="tel:+8618188810128" class="btn btn-primary">电话咨询</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Footer -->
-  <footer class="site-footer">
-    <div class="container">
-      © 逸瓏回收黄金业务｜价格仅供参考，以当天门市报价为准
-    </div>
-  </footer>
-
-  <!-- JS：载入一次＋每 30 秒刷新＋错误处理 -->
   <script>
-    // 人民币/克：使用 xwteam
-    // - 黄金足金9999：显示 BP - 40
-    // - 铂金（Pt）：显示 BP（不做主观减点，避免混淆）
     async function loadRmbPrices() {
       const goldEl = document.getElementById("goldPriceRMB");
       const ptEl = document.getElementById("ptPriceRMB");
 
-      // 初始化為載入文案
-      goldEl.innerText = "载入中...";
-      ptEl.innerText = "载入中...";
-
-      // 第一優先：xwteam 接口
       try {
         const res = await fetch("https://free.xwteam.cn/api/gold/trade", { cache: "no-store" });
         const data = await res.json();
@@ -318,69 +45,39 @@
           return;
         }
 
-        // Au（黃金）與 Pt（鉑金）
-        const au = arr.find(item => item && item.Symbol === "Au");
-        const pt = arr.find(item => item && item.Symbol === "Pt");
-
         // 黃金：BP - 40
+        const au = arr.find(item => item && item.Symbol === "Au");
         if (au && au.BP !== undefined) {
           const bpAu = parseFloat(au.BP);
-          if (!isNaN(bpAu)) {
-            const displayAu = (bpAu - 40).toFixed(2) + " 元/克";
-            goldEl.innerText = displayAu;
-          } else {
-            goldEl.innerText = "暫時無法取得";
-          }
+          goldEl.innerText = !isNaN(bpAu) ? (bpAu - 40).toFixed(2) + " 元/克" : "暫時無法取得";
         } else {
           goldEl.innerText = "暫時無法取得";
         }
 
-        // 鉑金：BP 直接顯示
+        // 鉑金：BP - 35
+        const pt = arr.find(item => item && item.Symbol === "Pt");
         if (pt && pt.BP !== undefined) {
           const bpPt = parseFloat(pt.BP);
-          if (!isNaN(bpPt)) {
-            const displayPt = bpPt.toFixed(2) + " 元/克";
-            ptEl.innerText = displayPt;
-          } else {
-            ptEl.innerText = "暫時無法取得";
-          }
+          ptEl.innerText = !isNaN(bpPt) ? (bpPt - 35).toFixed(2) + " 元/克" : "暫時無法取得";
         } else {
           ptEl.innerText = "暫時無法取得";
         }
 
-        return; // 若 xwteam 成功則結束
       } catch (err) {
-        console.error("xwteam API 错误：", err);
+        console.error("API 错误：", err);
+        goldEl.innerText = "暫時無法取得";
+        ptEl.innerText = "暫時無法取得";
       }
-
-      // 備援接口（如需）：若你有其他可用的免費 JSON 接口可在此補充
-      // 示例：假設存在某 JSON 端點返回 { pt_rmb_per_gram: 215.40, au_rmb_per_gram: 541.57 }
-      // try {
-      //   const res2 = await fetch("https://your-backup-api.example.com/v1/prices", { cache: "no-store" });
-      //   const data2 = await res2.json();
-      //   const auRmb = parseFloat(data2?.au_rmb_per_gram);
-      //   const ptRmb = parseFloat(data2?.pt_rmb_per_gram);
-      //   if (!isNaN(auRmb)) goldEl.innerText = (auRmb - 40).toFixed(2) + " 元/克";
-      //   if (!isNaN(ptRmb)) ptEl.innerText = ptRmb.toFixed(2) + " 元/克";
-      //   return;
-      // } catch (err2) {
-      //   console.error("备援 API 错误：", err2);
-      // }
-
-      // 全部失敗時
-      goldEl.innerText = "暫時無法取得";
-      ptEl.innerText = "暫時無法取得";
     }
 
     function refreshAll() {
       loadRmbPrices();
     }
 
-    // 页面载入时执行一次
+    // 頁面載入時執行一次
     refreshAll();
-    // 每隔 30 秒自动刷新
+    // 每隔 30 秒自動刷新
     setInterval(refreshAll, 30000);
   </script>
-
 </body>
 </html>
