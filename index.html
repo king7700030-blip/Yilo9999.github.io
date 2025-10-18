@@ -259,27 +259,30 @@
   </section>
 
   <!-- Bottom CTA -->
-  <section id="contact">
-    <div class="container">
-      <div class="cta-box">
-        <h3 data-i18n="contactTitle">准备开始回收？我们来协助你</h3>
-        <p class="muted" data-i18n="contactDesc">提交饰品信息即可获得初步估价，再进行专业检测后即日付款。</p>
-        <div class="cta-actions">
-          <a href="#pricing" class="btn btn-light" data-i18n="ctaSeePricing">查看报价</a>
-          <a href="tel:+8618188810128" class="btn btn-primary" data-i18n="ctaCall">电话咨询</a>
-          <!-- 修正：微信諮詢改為切換顯示圖片的按鈕 -->
-          <button type="button" id="wechatBtn" class="btn btn-primary" style="background:#1aad19;border:1px solid rgba(0,0,0,0.05)" data-i18n="ctaWeChat">微信咨询</button>
-        </div>
-        <!-- 微信 QR 圖片面板（與按鈕匹配，使用你最新圖片） -->
-        <div id="wechatPanel" class="wechat-panel">
-          <!-- 若圖片與 HTML 位於同一目錄，以下 src 直接使用檔名即可 -->
-          <img id="wechatImg" src="RLT1DZhzRA9MWnxDY2d7R.jpeg" alt="WeChat QR Code">
-          <div class="wechat-tip" data-i18n="wechatTip">扫描上面的 QR Code，加我为朋友。</div>
-          <div id="wechatError" class="note" style="color:#ffe;display:none">提示：图片未能显示，请确认文件路径正确或与此 HTML 同目录。</div>
-        </div>
+<section id="contact">
+  <div class="container">
+    <div class="cta-box">
+      <h3 data-i18n="contactTitle">准备开始回收？我们来协助你</h3>
+      <p class="muted" data-i18n="contactDesc">提交饰品信息即可获得初步估价，再进行专业检测后即日付款。</p>
+      <div class="cta-actions">
+        <a href="#pricing" class="btn btn-light" data-i18n="ctaSeePricing">查看报价</a>
+        <a href="tel:+8618188810128" class="btn btn-primary" data-i18n="ctaCall">电话咨询</a>
+        <!-- 微信諮詢按鈕：切換顯示 QR 圖 -->
+        <button type="button" id="wechatBtn" class="btn btn-primary" style="background:#1aad19;border:1px solid rgba(0,0,0,0.05)" data-i18n="ctaWeChat">微信咨询</button>
+      </div>
+
+      <!-- 微信 QR 圖片面板（使用線上圖片 URL，避免本地路徑問題） -->
+      <div id="wechatPanel" class="wechat-panel" style="display:none">
+        <img id="wechatImg" 
+             src="https://copilot.microsoft.com/th/id/BCO.59c29f5a-2775-48b4-bd11-5327672e83dc.png" 
+             alt="WeChat QR Code">
+        <div class="wechat-tip" data-i18n="wechatTip">扫描上面的 QR Code，加我为朋友。</div>
+        <!-- 顯示載入或錯誤提示 -->
+        <div id="wechatError" class="note" style="color:#ffe;display:none">提示：图片未能显示。你也可以提供新的微信 QR 图片 URL，我來幫你更新。</div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
   <!-- Footer -->
   <footer class="site-footer">
