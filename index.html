@@ -70,6 +70,7 @@
 
     .pricing-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
     .card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
+    .card h3{margin:4px 0 8px;color:var(--blue)}
     .note{color:var(--muted);font-size:13px;margin-bottom:10px}
     table{width:100%;border-collapse:collapse}
     th,td{border:1px solid var(--line);padding:10px;text-align:center}
@@ -225,7 +226,6 @@
                   <tr><td data-i18n="ptLabel">铂金（Pt950）</td><td><span id="ptPriceRMB">载入中...</span></td></tr>
                 </tbody>
               </table>
-              <!-- 新增：最後更新時間（展開下方顯示） -->
               <div class="note" id="rmbUpdated" style="margin-top:8px;">最后更新：载入中...</div>
               <div class="note" data-i18n="otherNote">其他贵金属（如 K 金、白银）及奢侈品（腕表、珠宝），请向职员进行查询。</div>
             </div>
@@ -265,15 +265,17 @@
         <h3 data-i18n="contactTitle">准备开始回收？我们来协助你</h3>
         <p class="muted" data-i18n="contactDesc">提交饰品信息即可获得初步估价，再进行专业检测后即日付款。</p>
         <div class="cta-actions">
-  <a href="#pricing" class="btn btn-light">查看报价</a>
-  <a href="tel:+8618188810128" class="btn btn-primary">电话咨询</a>
-  <a href="weixin://dl/scan" class="btn btn-primary" style="background:#1aad19">微信諮詢</a>
-</div>
-        <!-- 新增：微信 QR 圖片（初始隱藏，按鈕點擊後顯示） -->
+          <a href="#pricing" class="btn btn-light" data-i18n="ctaSeePricing">查看报价</a>
+          <a href="tel:+8618188810128" class="btn btn-primary" data-i18n="ctaCall">电话咨询</a>
+          <!-- 修正：微信諮詢改為切換顯示圖片的按鈕 -->
+          <button type="button" id="wechatBtn" class="btn btn-primary" style="background:#1aad19;border:1px solid rgba(0,0,0,0.05)" data-i18n="ctaWeChat">微信咨询</button>
+        </div>
+        <!-- 微信 QR 圖片面板（與按鈕匹配，使用你最新圖片） -->
         <div id="wechatPanel" class="wechat-panel">
-          <img id="wechatImg" src="SRkPcRWQj46Vc1WYzzud4.jpeg" alt="WeChat QR Code">
-          <div class="wechat-tip" data-i18n="wechatTip">掃描上面的 QR Code，加我為朋友。</div>
-          <div id="wechatError" class="note" style="color:#ffe;display:none">提示：圖片未能顯示，請確認檔案路徑正確或與此 HTML 同目錄。</div>
+          <!-- 若圖片與 HTML 位於同一目錄，以下 src 直接使用檔名即可 -->
+          <img id="wechatImg" src="RLT1DZhzRA9MWnxDY2d7R.jpeg" alt="WeChat QR Code">
+          <div class="wechat-tip" data-i18n="wechatTip">扫描上面的 QR Code，加我为朋友。</div>
+          <div id="wechatError" class="note" style="color:#ffe;display:none">提示：图片未能显示，请确认文件路径正确或与此 HTML 同目录。</div>
         </div>
       </div>
     </div>
@@ -286,7 +288,7 @@
     </div>
   </footer>
 
-  <!-- JS：價格刷新＋最後更新＋語言切換＋微信顯示 -->
+  <!-- JS：價格刷新＋最後更新＋語言切換＋微信按鈕顯示 -->
   <script>
     // 人民幣/克：使用 xwteam
     // - 足金999：顯示 BP - 40
@@ -343,7 +345,7 @@
     refreshAll();
     setInterval(refreshAll, 30000);
 
-    // 微信諮詢：顯示／隱藏 QR，並處理圖片錯誤提示
+    // 微信諮詢按鈕：顯示／隱藏 QR 圖片，並處理圖片錯誤提示
     (function initWeChatToggle(){
       const btn = document.getElementById("wechatBtn");
       const panel = document.getElementById("wechatPanel");
