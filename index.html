@@ -158,7 +158,7 @@
         <h3 data-i18n="whyTitle">为什么选择我们？</h3>
         <ul>
           <li data-i18n="why1">透明报价：费用清晰无隐性</li>
-          <li data-i18n="why2">专业检测：现场仪器检测含金量</li>
+          <li data-i18n="why2">专业检测：仪器检测含金量</li>
           <li data-i18n="why3">即时付款：确认金额后即日结算</li>
         </ul>
         <p class="muted" data-i18n="whyNote">全程可观看与说明，确保安心与效率。</p>
@@ -290,7 +290,7 @@
   <!-- JS：價格刷新＋最後更新＋語言切換＋微信按鈕顯示 -->
   <script>
     // 人民幣/克：使用 xwteam
-    // - 足金999：顯示 BP - 38
+    // - 足金999：顯示 BP - 30
     // - 鉑金（Pt950）：顯示 BP - 40
     async function loadRmbPrices() {
       const rmbGoldEl = document.getElementById("goldPriceRMB");
@@ -312,7 +312,7 @@
         const au = list.find(item => item?.Symbol === "Au");
         if (au && au.BP !== undefined) {
           const bpAu = parseFloat(au.BP);
-          rmbGoldEl.innerText = !isNaN(bpAu) ? (bpAu - 38).toFixed(2) + " 元/克" : "暫時無法取得";
+          rmbGoldEl.innerText = !isNaN(bpAu) ? (bpAu - 30).toFixed(2) + " 元/克" : "暫時無法取得";
         } else {
           rmbGoldEl.innerText = "暫時無法取得";
         }
