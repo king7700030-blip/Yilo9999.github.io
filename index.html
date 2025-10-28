@@ -224,6 +224,8 @@
                 <tbody>
                   <tr><td data-i18n="goldLabel">足金999</td><td><span id="goldPriceRMB">载入中...</span></td></tr>
                   <tr><td data-i18n="ptLabel">铂金（Pt950）</td><td><span id="ptPriceRMB">载入中...</span></td></tr>
+                  <!-- 新增：18K黄金 -->
+                  <tr><td>18K黄金</td><td><span id="k18PriceRMB">载入中...</span></td></tr>
                 </tbody>
               </table>
               <div class="note" id="rmbUpdated" style="margin-top:8px;">最后更新：载入中...</div>
@@ -290,11 +292,13 @@
   <!-- JS：價格刷新＋最後更新＋語言切換＋微信按鈕顯示 -->
   <script>
     // 人民幣/克：使用 xwteam
-    // - 足金999：顯示 BP - 27
+    // - 足金999：顯示 BP - 33
     // - 鉑金（Pt950）：顯示 BP - 30
+    // - 18K黃金：以足金999為基準 × 0.72
     async function loadRmbPrices() {
       const rmbGoldEl = document.getElementById("goldPriceRMB");
       const rmbPtEl = document.getElementById("ptPriceRMB");
+      const rmbK18El = document.getElementById("k18PriceRMB");
       const rmbUpdatedEl = document.getElementById("rmbUpdated");
 
       try {
@@ -305,6 +309,7 @@
         if (!list) {
           rmbGoldEl.innerText = "暫時無法取得";
           rmbPtEl.innerText = "暫時無法取得";
+          if (rmbK18El) rmbK18El.innerText = "暫時無法取得";
           if (rmbUpdatedEl) rmbUpdatedEl.innerText = "最后更新：暫無";
           return;
         }
@@ -312,9 +317,16 @@
         const au = list.find(item => item?.Symbol === "Au");
         if (au && au.BP !== undefined) {
           const bpAu = parseFloat(au.BP);
-          rmbGoldEl.innerText = !isNaN(bpAu) ? (bpAu - 27).toFixed(2) + " 元/克" : "暫時無法取得";
+          const auPrice = !isNaN(bpAu) ? (bpAu - 33) : NaN;
+          rmbGoldEl.innerText = !isNaN(auPrice) ? auPrice.toFixed(2) + " 元/克" : "暫時無法取得";
+          // 18K = 足金基準 × 0.72
+          if (rmbK18El) {
+            const k18 = !isNaN(auPrice) ? (auPrice * 0.72) : NaN;
+            rmbK18El.innerText = !isNaN(k18) ? k18.toFixed(2) + " 元/克" : "暫時無法取得";
+          }
         } else {
           rmbGoldEl.innerText = "暫時無法取得";
+          if (rmbK18El) rmbK18El.innerText = "暫時無法取得";
         }
 
         const pt = list.find(item => item?.Symbol === "Pt");
@@ -333,6 +345,7 @@
         console.error("RMB API 錯誤：", err);
         rmbGoldEl.innerText = "暫時無法取得";
         rmbPtEl.innerText = "暫時無法取得";
+        if (rmbK18El) rmbK18El.innerText = "暫時無法取得";
         if (rmbUpdatedEl) rmbUpdatedEl.innerText = "最后更新：暫無";
       }
     }
@@ -371,7 +384,7 @@
         heroDesc: "免费线上初步估价，现场专业检测与即时付款。价格仅供参考，实际回收以当天门市报价为准。",
         badge1: "免费查价", badge2: "即时更新", badge3: "现场价为准",
         ctaPrimary: "立即查价", ctaGhost: "查看回收流程",
-        whyTitle: "为什么选择我们？", why1: "透明报价：费用清晰无隐性", why2: "专业检测：现场仪器检测含金量", why3: "即时付款：确认金额后即日结算", whyNote: "全程可观看与说明，确保安心与效率。",
+        whyTitle: "为什么选择我们？", why1: "透明报价：费用清晰无隐性", why2: "专业检测：仪器检测含金量", why3: "即时付款：确认金额后即日结算", whyNote: "全程可观看与说明，确保安心与效率。",
         processTitle: "回收流程", processSub: "简单三步，透明可见：咨询 → 检测 → 定价与付款。",
         step1Title: "咨询与初步估价", step1Desc: "提供饰品成色与重量（无需拆开），线上免费估价，仅供参考。",
         step2Title: "到店/快递检测", step2Desc: "专业仪器检测含金量与净重，全程可观看并现场说明。",
@@ -429,7 +442,6 @@
         step2Title: "In-store / Courier Testing", step2Desc: "Professional instruments measure purity and net weight. The process is observable with on-site explanations.",
         step3Title: "Pricing & Same-day Payment", step3Desc: "We calculate based on the day’s rates and fineness, paying by cash or transfer on the same day.",
         trustTitle: "Advantages & Data", trustSub: "Proven reputation and standardized procedures to help you decide quickly.",
-        trust1: "Average quoting time", trust2: "24/7 phone response",
         pricingTitle: "Reference Pricing", pricingSub: "Figures below are dynamic samples. Final buyback prices are confirmed in-store or by customer service.",
         pricingToggle: "Expand/Collapse Pricing Table",
         cardRmbTitle: "Yilong Real-time Buyback", unitRmb: "Unit: RMB/gram",
