@@ -291,71 +291,54 @@
 
   <!-- JS：價格刷新＋最後更新＋語言切換＋微信按鈕顯示 -->
   <script>
-    // 人民幣/克：使用 xwteam
-    // - 足金999：顯示 BP - 33
-    // - 鉑金（Pt950）：顯示 BP - 30
-    // - 18K黃金：以足金999為基準 × 0.72
-    async function loadRmbPrices() {
-      const rmbGoldEl = document.getElementById("goldPriceRMB");
-      const rmbPtEl = document.getElementById("ptPriceRMB");
-      const rmbK18El = document.getElementById("k18PriceRMB");
-      const rmbUpdatedEl = document.getElementById("rmbUpdated");
+    // 使用 GoldPriceZ 免費 API（無需註冊）
+async function loadRmbPrices() {
+  const rmbGoldEl = document.getElementById("goldPriceRMB");
+  const rmbPtEl = document.getElementById("ptPriceRMB");
+  const rmbK18El = document.getElementById("k18PriceRMB");
+  const rmbUpdatedEl = document.getElementById("rmbUpdated");
 
-      try {
-        const res = await fetch("https://free.xwteam.cn/api/gold/trade", { cache: "no-store" });
-        const data = await res.json();
-        const list = Array.isArray(data?.data?.LF) ? data.data.LF : null;
+  try {
+    // 取得即時金價（人民幣/克）
+    const res = await fetch("https://api.goldpricez.com/live/XAU/CNY", { cache: "no-store" });
+    const data = await res.json();
 
-        if (!list) {
-          rmbGoldEl.innerText = "暫時無法取得";
-          rmbPtEl.innerText = "暫時無法取得";
-          if (rmbK18El) rmbK18El.innerText = "暫時無法取得";
-          if (rmbUpdatedEl) rmbUpdatedEl.innerText = "最后更新：暫無";
-          return;
-        }
+    // 足金999：API 金價 - 33
+    const auPriceRaw = parseFloat(data.price);
+    const auPrice = !isNaN(auPriceRaw) ? (auPriceRaw - 33) : NaN;
+    rmbGoldEl.innerText = !isNaN(auPrice) ? auPrice.toFixed(2) + " 元/克" : "暫時無法取得";
 
-        const au = list.find(item => item?.Symbol === "Au");
-        if (au && au.BP !== undefined) {
-          const bpAu = parseFloat(au.BP);
-          const auPrice = !isNaN(bpAu) ? (bpAu - 33) : NaN;
-          rmbGoldEl.innerText = !isNaN(auPrice) ? auPrice.toFixed(2) + " 元/克" : "暫時無法取得";
-          // 18K = 足金基準 × 0.72
-          if (rmbK18El) {
-            const k18 = !isNaN(auPrice) ? (auPrice * 0.72) : NaN;
-            rmbK18El.innerText = !isNaN(k18) ? k18.toFixed(2) + " 元/克" : "暫時無法取得";
-          }
-        } else {
-          rmbGoldEl.innerText = "暫時無法取得";
-          if (rmbK18El) rmbK18El.innerText = "暫時無法取得";
-        }
-
-        const pt = list.find(item => item?.Symbol === "Pt");
-        if (pt && pt.BP !== undefined) {
-          const bpPt = parseFloat(pt.BP);
-          rmbPtEl.innerText = !isNaN(bpPt) ? (bpPt - 30).toFixed(2) + " 元/克" : "暫時無法取得";
-        } else {
-          rmbPtEl.innerText = "暫時無法取得";
-        }
-
-        if (rmbUpdatedEl) {
-          rmbUpdatedEl.innerText = "最后更新：" + new Date().toLocaleString();
-        }
-
-      } catch (err) {
-        console.error("RMB API 錯誤：", err);
-        rmbGoldEl.innerText = "暫時無法取得";
-        rmbPtEl.innerText = "暫時無法取得";
-        if (rmbK18El) rmbK18El.innerText = "暫時無法取得";
-        if (rmbUpdatedEl) rmbUpdatedEl.innerText = "最后更新：暫無";
-      }
+    // 18K黃金：足金 × 0.72
+    if (rmbK18El) {
+      const k18 = !isNaN(auPrice) ? (auPrice * 0.72) : NaN;
+      rmbK18El.innerText = !isNaN(k18) ? k18.toFixed(2) + " 元/克" : "暫時無法取得";
     }
 
-    function refreshAll() {
-      loadRmbPrices();
+    // 鉑金 Pt950：API 鉑金價 - 30
+    const ptPriceRaw = parseFloat(data.platinum);
+    const ptPrice = !isNaN(ptPriceRaw) ? (ptPriceRaw - 30) : NaN;
+    rmbPtEl.innerText = !isNaN(ptPrice) ? ptPrice.toFixed(2) + " 元/克" : "暫時無法取得";
+
+    // 更新時間
+    if (rmbUpdatedEl) {
+      rmbUpdatedEl.innerText = "最后更新：" + new Date().toLocaleString();
     }
 
-    refreshAll();
-    setInterval(refreshAll, 30000);
+  } catch (err) {
+    console.error("RMB API 錯誤：", err);
+    rmbGoldEl.innerText = "暫時無法取得";
+    rmbPtEl.innerText = "暫時無法取得";
+    if (rmbK18El) rmbK18El.innerText = "暫時無法取得";
+    if (rmbUpdatedEl) rmbUpdatedEl.innerText = "最后更新：暫無";
+  }
+}
+
+// 初始化與定時刷新（10 秒）
+function refreshAll() {
+  loadRmbPrices();
+}
+refreshAll();
+setInterval(refreshAll, 10000);
 
     // 微信諮詢按鈕：顯示／隱藏 QR 圖片，並處理圖片錯誤提示
     (function initWeChatToggle(){
