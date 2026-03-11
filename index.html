@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+I’m <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
@@ -281,17 +281,15 @@
     </div>
   </div>
 </section>
-  
   <!-- Footer -->
   <footer class="site-footer">
     <div class="container">
       © 逸瓏回收黄金业务｜价格仅供参考，以当天门市报价为准
     </div>
   </footer>
-
   <!-- JS：價格刷新＋最後更新＋語言切換＋微信按鈕顯示 -->
-  <script>
-    // 使用 GoldPriceZ 免費 API（無需註冊）
+ <script>
+// 使用 MetalpriceAPI（需要金鑰）
 async function loadRmbPrices() {
   const rmbGoldEl = document.getElementById("goldPriceRMB");
   const rmbPtEl = document.getElementById("ptPriceRMB");
@@ -299,37 +297,33 @@ async function loadRmbPrices() {
   const rmbUpdatedEl = document.getElementById("rmbUpdated");
 
   try {
-    // 取得即時金價（人民幣/克）
-    const res = await fetch("https://api.goldpricez.com/live/XAU/CNY", { cache: "no-store" });
+    // 呼叫 API，基準貨幣設為 CNY，查詢黃金(XAU)與鉑金(PT)
+    const res = await fetch("https://api.metalpriceapi.com/v1/latest?apikey=93da294e6d06d917a9fdf8600403413f&base=CNY&symbols=XAU,PT", { cache: "no-store" });
     const data = await res.json();
 
-    // 足金999：API 金價 - 33
-    const auPriceRaw = parseFloat(data.price);
-    const auPrice = !isNaN(auPriceRaw) ? (auPriceRaw - 33) : NaN;
-    rmbGoldEl.innerText = !isNaN(auPrice) ? auPrice.toFixed(2) + " 元/克" : "暫時無法取得";
+    // 黃金 (XAU) 每克人民幣
+    const auPriceRaw = data.rates.XAU;
+    const auPrice = auPriceRaw - 33; // 足金999修正
+    rmbGoldEl.innerText = auPrice.toFixed(2) + " 元/克";
 
-    // 18K黃金：足金 × 0.72
-    if (rmbK18El) {
-      const k18 = !isNaN(auPrice) ? (auPrice * 0.72) : NaN;
-      rmbK18El.innerText = !isNaN(k18) ? k18.toFixed(2) + " 元/克" : "暫時無法取得";
-    }
+    // 18K黃金
+    const k18 = auPrice * 0.72;
+    rmbK18El.innerText = k18.toFixed(2) + " 元/克";
 
-    // 鉑金 Pt950：API 鉑金價 - 30
-    const ptPriceRaw = parseFloat(data.platinum);
-    const ptPrice = !isNaN(ptPriceRaw) ? (ptPriceRaw - 30) : NaN;
-    rmbPtEl.innerText = !isNaN(ptPrice) ? ptPrice.toFixed(2) + " 元/克" : "暫時無法取得";
+    // 鉑金 (PT)
+    const ptPriceRaw = data.rates.PT;
+    const ptPrice = ptPriceRaw - 30; // Pt950修正
+    rmbPtEl.innerText = ptPrice.toFixed(2) + " 元/克";
 
     // 更新時間
-    if (rmbUpdatedEl) {
-      rmbUpdatedEl.innerText = "最后更新：" + new Date().toLocaleString();
-    }
+    rmbUpdatedEl.innerText = "最后更新：" + new Date().toLocaleString();
 
   } catch (err) {
     console.error("RMB API 錯誤：", err);
     rmbGoldEl.innerText = "暫時無法取得";
     rmbPtEl.innerText = "暫時無法取得";
-    if (rmbK18El) rmbK18El.innerText = "暫時無法取得";
-    if (rmbUpdatedEl) rmbUpdatedEl.innerText = "最后更新：暫無";
+    rmbK18El.innerText = "暫時無法取得";
+    rmbUpdatedEl.innerText = "最后更新：暫無";
   }
 }
 
@@ -339,7 +333,7 @@ function refreshAll() {
 }
 refreshAll();
 setInterval(refreshAll, 10000);
-
+</script>
     // 微信諮詢按鈕：顯示／隱藏 QR 圖片，並處理圖片錯誤提示
     (function initWeChatToggle(){
       const btn = document.getElementById("wechatBtn");
